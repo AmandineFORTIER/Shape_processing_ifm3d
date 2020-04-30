@@ -44,3 +44,21 @@ cd ../../..
 pip3 install -r requirements.txt
 ```
 
+## How to use it ?
+
+### Modify the detected shape
+
+In main.py change the shape (RECTANGLE) to the desired one.
+
+See in the html documentation in "Shape" to have all accepted shapes.
+
+
+### Execute the code
+Via the terminal.
+
+```
+python3 main.py
+```
+
+It will output a picture with the detected shape.
+
