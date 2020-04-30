@@ -1,0 +1,4 @@
+opencv-python==4.2.0.34
+numpy==1.18.3
+lib/ifm3d
+
