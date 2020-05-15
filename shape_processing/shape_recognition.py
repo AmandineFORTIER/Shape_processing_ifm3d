@@ -10,8 +10,8 @@ def shape_recognition(shape,path):
     Detects different types of shapes on an image.
 
     We choose an image and a shape.\n
-    The algorithm will detect the position of the shape we've chosen.\n
-    If the shape is "ALL", "PARTIAL" or "UNKNOW", no position will be returned.
+    The algorithm will detect the position, center, and angle of the shape we've chosen.\n
+    If the shape is "ALL", "PARTIAL" or "UNKNOW", no position, center, or angle will be returned.
 
     Parameters
     ----------
@@ -28,6 +28,10 @@ def shape_recognition(shape,path):
         The image with the detected shape and it's name.
     detected_shapes : list
         The detected shapes.
+    center : tuple of float
+        Center of the detected shape.
+    angle : float
+        Angle of rotation of the detected shape.
     """
     img = __processing(path)
     if shape is None:
@@ -40,15 +44,15 @@ def shape_recognition(shape,path):
     height, width = img.shape
     img = __fill_holes(height, width, img)
 
-    detected,last_cont, detected_shape = __detect_shape(img, height, width, shape)
-    last_cont = __useless_contour(shape, detected, last_cont)
-    return last_cont, img, detected_shape
+    detected,last_cont, detected_shape, center, angle = __detect_shape(img, height, width, shape)
+    last_cont = __useless_contour(shape, detected, last_cont,center,angle)
+    return last_cont, img, detected_shape, center, angle
 
-def __useless_contour(shape, detected, last_cont):
+def __useless_contour(shape, detected, last_cont,center,angle):
     """
-    Erase the useless contours.
+    Erase the useless contours, center, and angle.
 
-    Contours are erased if the shape type is ALL, PARTIAL or UNKNOWN.
+    Contours, center, and angle are erased if the shape type is ALL, PARTIAL or UNKNOWN.
 
     Parameters
     ----------
@@ -58,16 +62,26 @@ def __useless_contour(shape, detected, last_cont):
         The detected shape
     last_cont : numpy.ndarray
         Contours of the shape.
+    center : tuple of float
+        Center of the detected shape.
+    angle : float
+        Angle of rotation of the detected shape.
 
     Returns
     -------
     last_cont : numpy.ndarray
         Contours of the shape.
+    center : tuple of float
+        Center of the detected shape.
+    angle : float
+        Angle of rotation of the detected shape.
     """
     if shape == Shape.Shape.ALL.value or \
             shape == Shape.Shape.PARTIAL.value or \
                 shape == Shape.Shape.UNKNOW.value:
             last_cont = np.array([])
+            center = None
+            angle = None
     return last_cont
 
 def __detect_shape(img, height, width, shape):
@@ -94,6 +108,10 @@ def __detect_shape(img, height, width, shape):
         Contours of the shape.
     detected_shapes : list
         The detected shapes.
+    center : tuple of float
+        Center of the detected shape.
+    angle : float
+        Angle of rotation of the detected shape.
     """
     font = cv2.FONT_HERSHEY_SIMPLEX
     contours, _ = cv2.findContours(img,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
@@ -103,6 +121,8 @@ def __detect_shape(img, height, width, shape):
     detected = None
     detected_shapes = []
     last_cont = np.array([]) 
+    center = None
+    angle = None
     for cont in hull_list:
         area = cv2.contourArea(cont)
         #continue if area is too small(noise) or too big
@@ -120,8 +140,9 @@ def __detect_shape(img, height, width, shape):
             cv2.putText(img, shape_name,(x,y),font,0.5,(255))
             if detected == shape:
                 last_cont = approx
+                center,_,angle = cv2.minAreaRect(cont)
                 break
-    return detected,last_cont, detected_shapes
+    return detected,last_cont, detected_shapes, center, angle
 
 def __check_non_partial_shape(cont, area, approx):
     """
@@ -357,9 +378,11 @@ if __name__ == "__main__":
     ap.add_argument("-i", "--image", help = "path to the image file",required=True)
     args = vars(ap.parse_args())
 
-    cont, img, detected = shape_recognition(Shape.Shape.RECTANGLE,args["image"])
-    print(cont)
-    print(detected)
+    cont, img, detected,center, angle = shape_recognition(Shape.Shape.RECTANGLE,args["image"])
+    print("cont : ",cont)
+    print("detected : ",detected)
+    print("center : ",center)
+    print("angle : ",angle)
     
     cv2.imshow("Shape Detection",img)
     cv2.waitKey(0)

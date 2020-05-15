@@ -2,11 +2,17 @@
 
 Shape_processing is a package to get the size of a specific shape with an IFM O3X101 camera.
 
-| Folder            | Content            |
-|-------------------|--------------------|
-| docs/             | Html documentation |
-| lib/              | Libraries    |
-| shape_processing/ | Code               |
+
+| Folder                                | Content                                                                               |
+|---------------------------------------|---------------------------------------------------------------------------------------|
+| docs/                                 | Html documentation                                                                    |
+| lib/                                  | Libraries                                                                             |
+| shape_processing/                     | Code                                                                                  |
+| shape_processing/Camera.py            | Create camera with IP address + take picture                                          |
+| shape_processing/Shape.py             | Define the different types of shapes                                                  |
+| shape_processing/shape_recognition.py | Detects different types of shapes on an image. Give its position, center and angle.   |
+| shape_processing/shape_size.py        | Get the height, width and length of the shape.                                        |
+
 
 
 ## Installation
