@@ -165,7 +165,7 @@ def main():
         return -1
     dist = im.distance_image()
     cv2.imwrite("preview.png",im.amplitude_image())
-    contour, img, _ = shape_recognition.shape_recognition(Shape.Shape.RECTANGLE,"preview.png")
+    contour, img, _,_,_ = shape_recognition.shape_recognition(Shape.Shape.RECTANGLE,"preview.png")
     cv2.imwrite("detectedShape.png",img)
     h,w,l = shape_size(contour,dist)
     print("Object height : ",h)
