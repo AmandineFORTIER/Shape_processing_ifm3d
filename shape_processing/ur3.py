@@ -339,5 +339,4 @@ if __name__=="__main__":
     img_height = 172
     z=120
     center = [118.3233413696289, 105.8612060546875]
-    get_object()
-   
+    get_object(dic,img_width,img_height,center,z,angle)
