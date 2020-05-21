@@ -12,7 +12,7 @@ Shape_processing is a package to get the size of a specific shape with an IFM O3
 | shape_processing/Shape.py             | Define the different types of shapes                                                  |
 | shape_processing/shape_recognition.py | Detects different types of shapes on an image. Give its position, center and angle.   |
 | shape_processing/shape_size.py        | Get the height, width and length of the shape.                                        |
-
+| shape_processing/ur3.py               | To grab the object with a UR3 robot                                                   |
 
 
 ## Installation

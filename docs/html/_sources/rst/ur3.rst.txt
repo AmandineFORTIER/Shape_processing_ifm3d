@@ -1,0 +1,7 @@
+ur3 module
+==========
+
+.. automodule:: ur3
+   :members:
+   :undoc-members:
+   :show-inheritance:

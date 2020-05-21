@@ -4,7 +4,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>shape_size module &#8212; Shape processing  documentation</title>
+    <title>ur3 module &#8212; Shape processing  documentation</title>
     <link rel="stylesheet" href="../_static/pyramid.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -14,8 +14,7 @@
     <script src="../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="ur3 module" href="ur3.html" />
-    <link rel="prev" title="shape_recognition module" href="shape_recognition.html" />
+    <link rel="prev" title="shape_size module" href="shape_size.html" />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Neuton&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nobile:regular,italic,bold,bolditalic&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
 <!--[if lte IE 6]>
@@ -34,10 +33,7 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="ur3.html" title="ur3 module"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="shape_recognition.html" title="shape_recognition module"
+          <a href="shape_size.html" title="shape_size module"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">Shape processing  documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" accesskey="U">shape_processing</a> &#187;</li> 
@@ -49,32 +45,45 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="module-shape_size">
-<span id="shape-size-module"></span><h1>shape_size module<a class="headerlink" href="#module-shape_size" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt id="shape_size.main">
-<code class="sig-prename descclassname">shape_size.</code><code class="sig-name descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#shape_size.main" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+  <div class="section" id="module-ur3">
+<span id="ur3-module"></span><h1>ur3 module<a class="headerlink" href="#module-ur3" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="ur3.GUI_Positions">
+<em class="property">class </em><code class="sig-prename descclassname">ur3.</code><code class="sig-name descname">GUI_Positions</code><a class="headerlink" href="#ur3.GUI_Positions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>GUI Position class is a GUI to declare the position of the robot on the image.
+It will save the robot position at the top left, top right,
+bottom left and bottom right of the camera’s view.</p>
+<dl class="py method">
+<dt id="ur3.GUI_Positions.get_pos">
+<em class="property">property </em><code class="sig-name descname">get_pos</code><a class="headerlink" href="#ur3.GUI_Positions.get_pos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the robot position.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>pos_value</strong> – A dictionnary that contains the positions. e.g ‘Top Left’: [‘116’, ‘-319’]</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
 
 <dl class="py function">
-<dt id="shape_size.shape_size">
-<code class="sig-prename descclassname">shape_size.</code><code class="sig-name descname">shape_size</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">contour</span></em>, <em class="sig-param"><span class="n">dist</span></em><span class="sig-paren">)</span><a class="headerlink" href="#shape_size.shape_size" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the shape size.</p>
-<p>Get the height, width and length of the shape.</p>
+<dt id="ur3.get_object">
+<code class="sig-prename descclassname">ur3.</code><code class="sig-name descname">get_object</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dic</span></em>, <em class="sig-param"><span class="n">img_width</span></em>, <em class="sig-param"><span class="n">img_height</span></em>, <em class="sig-param"><span class="n">center</span></em>, <em class="sig-param"><span class="n">z</span></em>, <em class="sig-param"><span class="n">angle</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ur3.get_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move the UR3 robot to get the object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>contour</strong> (<em>numpy.ndarray</em>) – The object’s contours.</p></li>
-<li><p><strong>dist</strong> (<em>numpy.ndarray</em>) – The distance image</p></li>
+<li><p><strong>dic</strong> (<em>dict</em>) – Dictionnary of positions.</p></li>
+<li><p><strong>img_width</strong> (<em>int</em>) – Width size of the image. In pixel.</p></li>
+<li><p><strong>img_height</strong> (<em>int</em>) – Height size of the image. In pixel.</p></li>
+<li><p><strong>center</strong> (<em>list</em>) – Object’s center. In pixel.</p></li>
+<li><p><strong>z</strong> (<em>float</em>) – Object’s height.</p></li>
+<li><p><strong>angle</strong> (<em>float</em>) – Angle of rotation of the object.</p></li>
 </ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><strong>height</strong> (<em>float</em>) – The object height in meters</p></li>
-<li><p><strong>length</strong> (<em>float</em>) – The object length in meters</p></li>
-<li><p><strong>width</strong> (<em>float</em>) – The object width in meters</p></li>
-</ul>
-</p>
 </dd>
 </dl>
 </dd></dl>
@@ -88,15 +97,12 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="shape_recognition.html"
-                        title="previous chapter">shape_recognition module</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="ur3.html"
-                        title="next chapter">ur3 module</a></p>
+  <p class="topless"><a href="shape_size.html"
+                        title="previous chapter">shape_size module</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../_sources/rst/shape_size.rst.txt"
+      <li><a href="../_sources/rst/ur3.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -124,10 +130,7 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="ur3.html" title="ur3 module"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="shape_recognition.html" title="shape_recognition module"
+          <a href="shape_size.html" title="shape_size module"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">Shape processing  documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="modules.html" >shape_processing</a> &#187;</li> 
