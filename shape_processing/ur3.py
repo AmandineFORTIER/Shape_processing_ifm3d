@@ -3,8 +3,11 @@ import math
 import numpy as np
 import socket
 
-HOST = "192.168.1.60"
+HOST = "149.201.218.149"
 PORT = 30001
+FORCE_GRIPPER = 40
+OPEN_GRIPPER = 75
+CLOSE_GRIPPER = 45
 
 class GUI_Positions:
     """
@@ -234,7 +237,7 @@ def __get_pixel_metric_value(dic_pos, img_width, img_height):
 
 def __goto_object(dic, x, y, z, angle):
     """
-    Get the pixel metric value (mm). From the camera to the robot.
+    Move the robot to get the object.
     
     Parameters
     ----------
@@ -250,18 +253,18 @@ def __goto_object(dic, x, y, z, angle):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.connect((HOST, PORT))
     output = __ur3_init(dic)        
-    output +=__ur3_move(0,0,z+200,angle, False) #open grip and go up
-    output +=__ur3_move(x,y,z+100,angle, False) #go to the top of the object
-    output +=__ur3_move(0,0,z,angle, False) 
+    output +=__ur3_move(x,y,z+250,angle, False) #go to the top of the object and open the grip
+    output +=__ur3_move(0,0,z,angle, False) #go down to grab the object
     output +=__ur3_move(0,0,z,angle, True)    #close the grip to get the object
-    output +=__ur3_move(0,0,z+200,angle, True)
+    output +=__ur3_move(0,0,z+250,angle, True) #go up
     output +="""end\n"""
     s.sendall(output.encode('utf-8'))
     s.close()
 
 def __ur3_init(dic):
     """
-    Initialise the robot. Go to home position then to Top Left position.
+    Initialise the robot. Go to home position then to Top Left position. 
+    Create the method to close and open the gripper.
     
     Parameters
     ----------
@@ -273,18 +276,46 @@ def __ur3_init(dic):
     output : str
         The message to send to the robot.
     """
+    # from https://github.com/sharathrjtr/ur10_rg2_ros/blob/master/ur_modern_driver/src/ur_driver.cpp
     x = int(dic.get("Top Left")[0])
     y = int(dic.get("Top Left")[1])
     output = """def urProf():\n
     movej([0,-1.5708,0,-1.5708,0,0],a=1,v=1)\n
+    movej([0,-1.36,0.93,-2.72,0,0],a=1,v=1)\n
     global init_x = """+str(x/1000)+"""\n
     global init_y = """+str(y/1000)+"""\n
-    movej(p[init_x,init_y,0.15728,0.0001,-3.166,-0.04],a=1,v=1)\n"""
+    movej(p[init_x,init_y,0.25,0.0001,-3.166,-0.04],a=1,v=1)\n
+    def set_rg(width="""+str(OPEN_GRIPPER)+""", force="""+str(FORCE_GRIPPER)+"""):\n
+        local input = floor(width)*4 + floor(force/2)*4*111\n
+        local msb=65536\n
+        local i=0\n
+        local output=0\n
+        while i<17:\n
+            set_digital_out(8,True)\n
+            if input>=msb:\n
+                input=input-msb\n
+                set_digital_out(9,False)\n
+            else:\n
+                set_digital_out(9,True)\n
+            end\n
+            if get_digital_in(8):\n
+                out=1\n
+            end\n
+            sync()\n
+            set_digital_out(8,False)\n
+            sync()\n
+            input=input*2\n
+            output=output*2\n
+            i=i+1\n
+        end\n
+        return output\n
+    end\n"""
     return output
 
 def __ur3_move(dx, dy, z, angle, close_grip):
     """
-    Move the robot.
+    Move the robot to a desired position.
+    Use movej.
     
     Parameters
     ----------
@@ -313,9 +344,12 @@ def __ur3_move(dx, dy, z, angle, close_grip):
     pos[0]=pos[0]+x\n
     pos[1]=pos[1]+y\n
     pos[2]=z\n
-    pos[3]=angle\n
-    set_tool_digital_out(0,"""+str(close_grip)+""")\n
-    movel(pos,a=1,v=1)\n"""
+    pos[3]=angle\n"""
+    grip_val = OPEN_GRIPPER
+    if(close_grip):
+        grip_val = CLOSE_GRIPPER
+    output+="""set_rg("""+str(grip_val)+""")\n
+    movej(pos,a=1,v=1)\n"""
     return output
 
 if __name__=="__main__":
@@ -331,12 +365,12 @@ if __name__=="__main__":
         for pos in dic.values():
             pos = __spin_to_val(pos)
     else:
-        left = {'Top Left': ['116', '-319'], 'Top Right': ['34', '-319'], 'Bottom Left': ['116', '-256'], 'Bottom Right': ['34', '-256'], 'Z': ['10']}
-        back = {'Top Left': ['312', '80'], 'Top Right': ['312', '-85'], 'Bottom Left': ['187', '80'], 'Bottom Right': ['187', '-85'], 'Z': ['10']}
-        dic = back
+        front = {'Top Left': ['211', '-397'], 'Top Right': ['-75', '-307'], 'Bottom Left': ['211', '-166'], 'Bottom Right': ['-75', '-166'], 'Z': ['40']}
+        left = {'Top Left': ['312', '80'], 'Top Right': ['312', '-85'], 'Bottom Left': ['187', '80'], 'Bottom Right': ['187', '-85'], 'Z': ['40']}
+        dic = front
     angle = -51.842769622802734
     img_width = 224
     img_height = 172
-    z=120
+    z=int(dic.get("Z")[0])
     center = [118.3233413696289, 105.8612060546875]
     get_object(dic,img_width,img_height,center,z,angle)
