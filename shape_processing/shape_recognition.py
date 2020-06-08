@@ -36,7 +36,7 @@ def shape_recognition(shape,path):
     img = __processing(path)
     if shape is None:
         try:
-            raise AttributeError('Shape can not be None')
+            raise AttributeError('Shape cannot be None')
         except AttributeError as e:
             print(e)
             return None, img, None
@@ -370,6 +370,9 @@ def __processing(path):
     img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
     img = cv2.GaussianBlur(img,(5,5),1)
     img = cv2.Canny(img,150, 190)
+    cv2.imshow("Shape Detection",img)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
     img = cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel,iterations=3)
     return img
 
